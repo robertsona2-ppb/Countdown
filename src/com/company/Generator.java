@@ -3,43 +3,37 @@ package com.company;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Generator {
 
     public static final int MIN_SMALL_NUM = 1;
-    public static final int MAX = 9;
-    public List<Integer> numbers = new ArrayList<>();
-    public List<Integer> largeNumbers = new ArrayList<>();
+    public static final int MAX_SMALL_NUM = 9;
+    public List<Integer> selectedNumbers = new ArrayList<>();
+    public List<Integer> largeNumbers = Stream.of(25, 50, 75, 100).collect(Collectors.toList());
+
     private Random random = new Random();
 
-    {
-        largeNumbers.add(25);
-        largeNumbers.add(50);
-        largeNumbers.add(75);
-        largeNumbers.add(100);
-    }
-
     private int smallNumGenerator() {
-        return random.nextInt(MAX) + MIN_SMALL_NUM;
+        return random.nextInt(MIN_SMALL_NUM, MAX_SMALL_NUM + MIN_SMALL_NUM);
     }
 
     private int largeNumGenerator() {
         int index = random.nextInt(largeNumbers.size());
-        int result = largeNumbers.get(index);
-        largeNumbers.remove(index);
-        return result;
+        return largeNumbers.remove(index);
     }
 
 
     public void smallNumSelections(int selections) {
         for (int i = 0; i < selections; i++) {
-            numbers.add(smallNumGenerator());
+            selectedNumbers.add(smallNumGenerator());
         }
     }
 
     public void largeNumSelections(int selections) {
         for (int i = 0; i < (6 - selections); i++) {
-            numbers.add(largeNumGenerator());
+            selectedNumbers.add(largeNumGenerator());
         }
     }
 
@@ -56,43 +50,33 @@ public class Generator {
         return current;
     }
 
-    public int arithmeticSwitchWithDiv(int current, int index) {
-        int arithmetic = random.nextInt(4);
-        System.out.println(arithmetic);
+    public int arithmeticSwitchWithDiv (int current, int index){
+        final int arithmetic = random.nextInt(4);
         switch (arithmetic) {
             case 0:
-                current += numbers.get(index + 1);
-                break;
             case 1:
-                current -= numbers.get(index + 1);
-                break;
             case 2:
-                current = current * numbers.get(index + 1);
-                break;
+                return arithmeticSwitchWithoutDiv(current, index, arithmetic);
             case 3:
-                if (current % numbers.get(index + 1) == 0) {
-                    current = current / numbers.get(index + 1);
-                } else {
-                    current = arithmeticSwitchWithoutDiv(current, index);
-                }
-                break;
+                return (current % selectedNumbers.get(index + 1) == 0) ? current / selectedNumbers.get(index + 1)
+                                                                       : arithmeticSwitchWithoutDiv(current,
+                                                                                            index,
+                                                                                            random.nextInt(3));
+            default:
+                throw new IllegalStateException(String.format("No case for arithmetic: ", arithmetic));
         }
-        return current;
     }
 
-    public int arithmeticSwitchWithoutDiv(int current, int index) {
-        int arithmetic = random.nextInt(4);
+    private int arithmeticSwitchWithoutDiv ( int current, int index, int arithmetic){
         switch (arithmetic) {
             case 0:
-                current += numbers.get(index + 1);
-                break;
+                return current + selectedNumbers.get(index + 1);
             case 1:
-                current -= numbers.get(index + 1);
-                break;
+                return current - selectedNumbers.get(index + 1);
             case 2:
-                current = current * numbers.get(index + 1);
-                break;
+                return current * selectedNumbers.get(index + 1);
+            default:
+                throw new IllegalStateException(String.format("No case for arithmetic: ", arithmetic));
         }
-        return current;
     }
 }

@@ -13,14 +13,14 @@ public class Main {
         Integer numOfSmallPicks = Integer.valueOf(in.nextLine());
 
         callGenerator(numOfSmallPicks);
-        System.out.println(generator.numbers);
+        System.out.println(generator.selectedNumbers);
 
     }
 
     public static void callGenerator(int selections){
         generator.smallNumSelections(selections);
         generator.largeNumSelections(selections);
-        int bigNum = generator.generateBigNumber(generator.numbers);
+        int bigNum = generator.generateBigNumber(generator.selectedNumbers);
         System.out.println(bigNum);
     }
 }
