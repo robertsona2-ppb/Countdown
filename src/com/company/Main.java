@@ -20,5 +20,7 @@ public class Main {
     public static void callGenerator(int selections){
         generator.smallNumSelections(selections);
         generator.largeNumSelections(selections);
+        int bigNum = generator.generateBigNumber(generator.numbers);
+        System.out.println(bigNum);
     }
 }
